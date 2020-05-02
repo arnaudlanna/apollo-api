@@ -1,7 +1,8 @@
-import static spark.Spark.get;
+import repository.User;
 
 public class Main {
     public static void main(String[] args) {
-        get("/hello", (req, res) -> "Hello World");
+        User user = new repository.User();
+        user.createUser("Sábio", "sabio@apollocast.live", "123456");
     }
 }
