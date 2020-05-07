@@ -2,9 +2,11 @@ package model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 public class User implements Serializable {
 
     @Id
@@ -12,17 +14,20 @@ public class User implements Serializable {
     @Column(unique = true, nullable = false)
     private Integer id;
 
-    @Column(unique = true, nullable = false, length = 100)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column(unique = false, nullable = false, length = 100)
+    @Column(unique = false, nullable = false)
     private String name;
 
-    @Column(unique = false, nullable = false, length = 100)
+    @Column(unique = false, nullable = false)
     private String password;
 
-    @Column(unique = false, length = 100)
+    @Column(unique = false)
     private String profilePicture;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    private List<Artist> subscriptions = new ArrayList<>();
 
     public User(){}
 
@@ -70,5 +75,13 @@ public class User implements Serializable {
 
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public List<Artist> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(List<Artist> subscriptions) {
+        this.subscriptions = subscriptions;
     }
 }
