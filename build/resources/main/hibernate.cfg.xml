@@ -5,7 +5,7 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3307/apollo</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/apollo</property>
         <property name="hibernate.connection.password"></property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.dialect">org.hibernate.dialect.MySQL57Dialect</property>
@@ -13,6 +13,7 @@
         <property name="hbm2ddl.auto">update</property>
         <mapping class="model.User"/>
         <mapping class="model.Podcast"/>
+
         <mapping class="model.Artist"/>
         <mapping class="model.Category"/>
     </session-factory>
