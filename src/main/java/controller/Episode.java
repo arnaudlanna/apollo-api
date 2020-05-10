@@ -1,7 +1,7 @@
 package controller;
 
 import com.google.gson.Gson;
-import model.PodcastViewModel;
+import model.EpisodeViewModel;
 import spark.Spark;
 
 import java.util.ArrayList;
@@ -9,21 +9,21 @@ import java.util.List;
 
 import static spark.Spark.get;
 
-public class Podcast {
+public class Episode {
     public static void routes() {
         Gson gson = new Gson();
 
-        get("/podcast", (req, res) -> {
-            List<PodcastViewModel> result = new ArrayList<>();
+        get("/episode", (req, res) -> {
+            List<EpisodeViewModel> result = new ArrayList<>();
             try {
-                List<model.Podcast> podcasts;
+                List<model.Episode> episodes;
                 if(req.queryParams("q") != null) {
-                    podcasts = repository.Podcast.find(req.queryParams("q"));
+                    episodes = repository.Episode.find(req.queryParams("q"));
                 } else {
-                    podcasts = repository.Podcast.list();
+                    episodes = repository.Episode.list();
                 }
-                for (model.Podcast podcast : podcasts) {
-                    result.add(new PodcastViewModel(podcast));
+                for (model.Episode episode : episodes) {
+                    result.add(new EpisodeViewModel(episode));
                 }
             } catch (Exception ex) {
                 return Spark.halt(500);

@@ -1,41 +1,27 @@
 package model;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity
-@Table(name = "episode")
-public class Episode {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(unique = true, nullable = false)
+public class EpisodeViewModel {
     private Integer id;
-
-    @Column(unique = false, nullable = false)
     private String title;
-
-    @Column(unique = false, length = 1024)
     private String description;
-
-    @Column(unique = false, nullable = false)
     private Integer duration;
-
-    @Column(unique = false, nullable = false)
     private Integer views;
-
-    @Column(unique = false, nullable = false)
     private Integer likes;
-
-    @Column(unique = false)
     private String banner;
+
+    public EpisodeViewModel(Episode episode) {
+        this.id = episode.getId();
+        this.title = episode.getTitle();
+        this.description = episode.getDescription();
+        this.duration = episode.getDuration();
+        this.views = episode.getViews();
+        this.likes = episode.getLikes();
+        this.banner = episode.getBanner();
+    }
+
     public Integer getId() {
         return id;
     }
-
-    @ManyToOne()
-    private Podcast podcast = new Podcast();
 
     public void setId(Integer id) {
         this.id = id;
@@ -87,13 +73,5 @@ public class Episode {
 
     public void setBanner(String banner) {
         this.banner = banner;
-    }
-
-    public Podcast getPodcast() {
-        return podcast;
-    }
-
-    public void setPodcast(Podcast podcast) {
-        this.podcast = podcast;
     }
 }

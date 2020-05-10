@@ -24,6 +24,9 @@ public class Podcast implements Serializable {
     )
     private List<User> subscribers = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
+    private List<Episode> episodes = new ArrayList<>();
+
     @Column(unique = false, nullable = false)
     private String name;
 
@@ -57,5 +60,13 @@ public class Podcast implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<Episode> getEpisodes() {
+        return episodes;
+    }
+
+    public void setEpisodes(List<Episode> episodes) {
+        this.episodes = episodes;
     }
 }
