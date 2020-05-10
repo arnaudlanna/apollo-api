@@ -1,33 +1,32 @@
 package model;
 
 import javax.persistence.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
-@Table(name = "podcasts")
-public class Podcast {
+@Table(name = "podcast")
+public class Podcast implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(unique = true, nullable = false)
     private Integer id;
 
-    @Column(unique = false, nullable = false)
-    private String title;
+    @OneToOne(optional = false)
+    private User user = new User();
 
-    @Column(unique = false, length = 1024)
-    private String description;
-
-    @Column(unique = false, nullable = false)
-    private Integer duration;
-
-    @Column(unique = false, nullable = false)
-    private Integer views;
+    @ManyToMany(
+            mappedBy = "subscriptions",
+            cascade = CascadeType.ALL,
+            fetch = FetchType.LAZY
+    )
+    private List<User> subscribers = new ArrayList<>();
 
     @Column(unique = false, nullable = false)
-    private Integer likes;
+    private String name;
 
-    @Column(unique = false)
-    private String banner;
     public Integer getId() {
         return id;
     }
@@ -36,51 +35,27 @@ public class Podcast {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public User getUser() {
+        return user;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getDescription() {
-        return description;
+    public List<User> getSubscribers() {
+        return subscribers;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setSubscribers(List<User> subscribers) {
+        this.subscribers = subscribers;
     }
 
-    public Integer getDuration() {
-        return duration;
+    public String getName() {
+        return name;
     }
 
-    public void setDuration(Integer duration) {
-        this.duration = duration;
-    }
-
-    public Integer getViews() {
-        return views;
-    }
-
-    public void setViews(Integer views) {
-        this.views = views;
-    }
-
-    public Integer getLikes() {
-        return likes;
-    }
-
-    public void setLikes(Integer likes) {
-        this.likes = likes;
-    }
-
-    public String getBanner() {
-        return banner;
-    }
-
-    public void setBanner(String banner) {
-        this.banner = banner;
+    public void setName(String name) {
+        this.name = name;
     }
 }

@@ -1,10 +1,9 @@
-import model.Category;
-import repository.User;
+import controller.Podcast;
 import utils.Hibernate;
 
 public class Main {
     public static void main(String[] args) {
         Hibernate.getSessionFactory();
-        Category category = new Category();
+        Podcast.routes();
     }
 }

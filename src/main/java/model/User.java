@@ -27,7 +27,7 @@ public class User implements Serializable {
     private String profilePicture;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    private List<Artist> subscriptions = new ArrayList<>();
+    private List<Podcast> subscriptions = new ArrayList<>();
 
     public User(){}
 
@@ -77,11 +77,11 @@ public class User implements Serializable {
         this.profilePicture = profilePicture;
     }
 
-    public List<Artist> getSubscriptions() {
+    public List<Podcast> getSubscriptions() {
         return subscriptions;
     }
 
-    public void setSubscriptions(List<Artist> subscriptions) {
+    public void setSubscriptions(List<Podcast> subscriptions) {
         this.subscriptions = subscriptions;
     }
 }
