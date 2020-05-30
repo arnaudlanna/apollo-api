@@ -1,5 +1,6 @@
 package repository;
 
+import model.EpisodeViewModel;
 import org.hibernate.Session;
 import utils.Hibernate;
 
@@ -32,5 +33,31 @@ public class Episode {
 
         TypedQuery<model.Episode> likeResult = session.createQuery(like.where(cb.like(pod.<String>get("title"), "%" + q + "%"))).setMaxResults(5);
         return likeResult.getResultList();
+    }
+
+    public static model.Episode byId(Integer id){
+        Session session = Hibernate.getSessionFactory().openSession();
+        return session.get(model.Episode.class, id);
+    }
+
+    public static model.Episode create(EpisodeViewModel episodeInput) {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        model.Episode episode = new model.Episode();
+        episode.setTitle(episodeInput.getTitle());
+        episode.setBanner(episodeInput.getBanner());
+        episode.setDescription(episodeInput.getDescription());
+        episode.setDuration(episodeInput.getDuration());
+        episode.setPodcast(repository.Podcast.byId(episodeInput.getPodcastId()));
+        episode.setLikes(0);
+        episode.setViews(0);
+        session.saveOrUpdate(episode);
+
+        return episode;
+    }
+
+    public static void delete(Integer id) {
+        Session session = Hibernate.getSessionFactory().openSession();
+        session.delete(byId(id));
     }
 }

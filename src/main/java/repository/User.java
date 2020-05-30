@@ -13,4 +13,9 @@ public class User {
         Hibernate.shutdown();
         return user;
     }
+
+    public static model.User byId(Integer id){
+        Session session = Hibernate.getSessionFactory().openSession();
+        return session.get(model.User.class, id);
+    }
 }

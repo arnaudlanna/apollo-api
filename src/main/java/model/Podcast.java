@@ -30,6 +30,17 @@ public class Podcast implements Serializable {
     @Column(unique = false, nullable = false)
     private String name;
 
+    public Podcast() {
+    }
+
+    public Podcast(Integer id) {
+        this.id = id;
+    }
+
+    public Podcast(String name) {
+        this.name = name;
+    }
+
     public Integer getId() {
         return id;
     }

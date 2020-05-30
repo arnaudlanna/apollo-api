@@ -1,13 +1,13 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.BaseResponse;
 import model.EpisodeViewModel;
-import spark.Spark;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static spark.Spark.get;
+import static spark.Spark.*;
 
 public class Episode {
     public static void routes() {
@@ -26,10 +26,32 @@ public class Episode {
                     result.add(new EpisodeViewModel(episode));
                 }
             } catch (Exception ex) {
-                return Spark.halt(500);
+                return new BaseResponse(false, null);
             }
-            return result;
+            return new BaseResponse(true, result);
         }, gson::toJson);
+
+        post("/episodes", (req, res) -> {
+            EpisodeViewModel episode = gson.fromJson(req.body(), model.EpisodeViewModel.class);
+            model.Episode createdEpisode;
+            try {
+                createdEpisode = repository.Episode.create(episode);
+            } catch (Exception ex) {
+                System.out.println(ex);
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, new EpisodeViewModel(createdEpisode));
+        }, gson::toJson);
+
+        delete("/episodes/:id", (req, res) -> {
+            try {
+                repository.Episode.delete(Integer.parseInt(req.params(":id")));
+            } catch (Exception ex) {
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, null);
+        }, gson::toJson);
+
 
     }
 }

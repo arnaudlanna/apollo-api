@@ -1,5 +1,6 @@
 package repository;
 
+import model.PodcastViewModel;
 import org.hibernate.Session;
 import utils.Hibernate;
 
@@ -10,6 +11,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class Podcast {
+    private static Exception UserNotFoundException;
+
     public static List<model.Podcast> list(){
         Session session = Hibernate.getSessionFactory().openSession();
 
@@ -32,5 +35,30 @@ public class Podcast {
 
         TypedQuery<model.Podcast> likeResult = session.createQuery(like.where(cb.like(pod.<String>get("name"), "%" + q + "%"))).setMaxResults(5);
         return likeResult.getResultList();
+    }
+
+    public static model.Podcast byId(Integer id){
+        Session session = Hibernate.getSessionFactory().openSession();
+        return session.get(model.Podcast.class, id);
+    }
+
+    public static model.Podcast create(PodcastViewModel podcastInput) throws Exception {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        model.Podcast podcast = new model.Podcast();
+        podcast.setName(podcastInput.getName());
+        model.User user = repository.User.byId(podcastInput.getUserId());
+        if (user.getId() == null) {
+            throw UserNotFoundException;
+        }
+        podcast.setUser(user);
+        session.saveOrUpdate(podcast);
+
+        return podcast;
+    }
+
+    public static void delete(Integer id) {
+        Session session = Hibernate.getSessionFactory().openSession();
+        session.delete(byId(id));
     }
 }
