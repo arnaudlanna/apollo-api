@@ -11,6 +11,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class Episode {
+    private static Exception PodcastNotFoundException;
+
     public static List<model.Episode> list(){
         Session session = Hibernate.getSessionFactory().openSession();
 
@@ -40,7 +42,7 @@ public class Episode {
         return session.get(model.Episode.class, id);
     }
 
-    public static model.Episode create(EpisodeViewModel episodeInput) {
+    public static model.Episode create(EpisodeViewModel episodeInput) throws Exception {
         Session session = Hibernate.getSessionFactory().openSession();
 
         model.Episode episode = new model.Episode();
@@ -48,10 +50,14 @@ public class Episode {
         episode.setBanner(episodeInput.getBanner());
         episode.setDescription(episodeInput.getDescription());
         episode.setDuration(episodeInput.getDuration());
-        episode.setPodcast(repository.Podcast.byId(episodeInput.getPodcastId()));
+        model.Podcast podcast = repository.Podcast.byId(episodeInput.getPodcastId());
+        if (podcast.getId() == null) {
+            throw PodcastNotFoundException;
+        }
+        episode.setPodcast(podcast);
         episode.setLikes(0);
         episode.setViews(0);
-        session.saveOrUpdate(episode);
+        session.save(episode);
 
         return episode;
     }
