@@ -1,23 +1,27 @@
 package controller;
 
 import com.google.gson.Gson;
+import model.BaseResponse;
 import model.PodcastViewModel;
-import spark.Spark;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static spark.Spark.get;
+import static spark.Spark.post;
+import static spark.Spark.delete;
 
 public class Podcast {
     public static void routes() {
         Gson gson = new Gson();
 
-        get("/podcast", (req, res) -> {
+        get("/podcasts", (req, res) -> {
             List<PodcastViewModel> result = new ArrayList<>();
             try {
-                List<model.Podcast> podcasts;
-                if(req.queryParams("q") != null) {
+                List<model.Podcast> podcasts = new ArrayList<>();
+                if(req.queryParams("id") != null) {
+                    podcasts.add(repository.Podcast.byId(Integer.parseInt(req.queryParams("id"))));
+                } else if(req.queryParams("q") != null) {
                     podcasts = repository.Podcast.find(req.queryParams("q"));
                 } else {
                     podcasts = repository.Podcast.list();
@@ -26,9 +30,29 @@ public class Podcast {
                     result.add(new PodcastViewModel(podcast));
                 }
             } catch (Exception ex) {
-                return Spark.halt(500);
+                return new BaseResponse(false, null);
             }
-            return result;
+            return new BaseResponse(true, result);
+        }, gson::toJson);
+
+        post("/podcasts", (req, res) -> {
+            PodcastViewModel podcast = gson.fromJson(req.body(), model.PodcastViewModel.class);
+            model.Podcast createdPodcast;
+            try {
+                createdPodcast = repository.Podcast.create(podcast);
+            } catch (Exception ex) {
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, new PodcastViewModel(createdPodcast));
+        }, gson::toJson);
+
+        delete("/podcasts/:id", (req, res) -> {
+            try {
+                repository.Podcast.delete(Integer.parseInt(req.params(":id")));
+            } catch (Exception ex) {
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, null);
         }, gson::toJson);
 
     }
