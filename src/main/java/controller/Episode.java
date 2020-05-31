@@ -17,7 +17,9 @@ public class Episode {
             List<EpisodeViewModel> result = new ArrayList<>();
             try {
                 List<model.Episode> episodes;
-                if(req.queryParams("q") != null) {
+                if(req.queryParams("podcast_id") != null) {
+                    episodes = repository.Episode.byPodcastId(Integer.parseInt(req.queryParams("podcast_id")));
+                } else if(req.queryParams("q") != null) {
                     episodes = repository.Episode.find(req.queryParams("q"));
                 } else {
                     episodes = repository.Episode.list();

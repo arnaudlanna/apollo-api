@@ -37,6 +37,18 @@ public class Episode {
         return likeResult.getResultList();
     }
 
+    public static List<model.Episode> byPodcastId(Integer id){
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<model.Episode> cq = cb.createQuery(model.Episode.class);
+        Root<model.Episode> pod = cq.from(model.Episode.class);
+        CriteriaQuery<model.Episode> like = cq.select(pod);
+
+        TypedQuery<model.Episode> likeResult = session.createQuery(like.where(cb.equal(pod.<Integer>get("podcast"), id))).setMaxResults(5);
+        return likeResult.getResultList();
+    }
+
     public static model.Episode byId(Integer id){
         Session session = Hibernate.getSessionFactory().openSession();
         return session.get(model.Episode.class, id);
