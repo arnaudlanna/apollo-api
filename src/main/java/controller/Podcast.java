@@ -21,6 +21,8 @@ public class Podcast {
                 List<model.Podcast> podcasts = new ArrayList<>();
                 if(req.queryParams("id") != null) {
                     podcasts.add(repository.Podcast.byId(Integer.parseInt(req.queryParams("id"))));
+                } else if(req.queryParams("user_id") != null) {
+                    podcasts = repository.Podcast.byUserId(Integer.parseInt(req.queryParams("user_id")));
                 } else if(req.queryParams("q") != null) {
                     podcasts = repository.Podcast.find(req.queryParams("q"));
                 } else {
@@ -30,6 +32,7 @@ public class Podcast {
                     result.add(new PodcastViewModel(podcast));
                 }
             } catch (Exception ex) {
+                System.out.println(ex);
                 return new BaseResponse(false, null);
             }
             return new BaseResponse(true, result);
