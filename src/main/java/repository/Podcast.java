@@ -2,6 +2,7 @@ package repository;
 
 import model.PodcastViewModel;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import utils.Hibernate;
 
 import javax.persistence.TypedQuery;
@@ -71,6 +72,14 @@ public class Podcast {
 
     public static void delete(Integer id) {
         Session session = Hibernate.getSessionFactory().openSession();
-        session.delete(byId(id));
+        model.Podcast podcast = byId(id);
+        if (podcast == null || podcast.getId() == null) {
+            return;
+        }
+        Transaction tx = session.beginTransaction();
+        session.delete(podcast);
+        session.flush();
+        session.clear();
+        tx.commit();
     }
 }

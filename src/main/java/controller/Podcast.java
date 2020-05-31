@@ -7,9 +7,7 @@ import model.PodcastViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.delete;
+import static spark.Spark.*;
 
 public class Podcast {
     public static void routes() {
@@ -57,6 +55,8 @@ public class Podcast {
             }
             return new BaseResponse(true, null);
         }, gson::toJson);
+
+        options("/podcasts/:id", ((request, response) -> response));
 
     }
 }

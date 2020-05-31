@@ -2,6 +2,7 @@ package repository;
 
 import model.EpisodeViewModel;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import utils.Hibernate;
 
 import javax.persistence.TypedQuery;
@@ -76,6 +77,14 @@ public class Episode {
 
     public static void delete(Integer id) {
         Session session = Hibernate.getSessionFactory().openSession();
-        session.delete(byId(id));
+        model.Episode episode = byId(id);
+        if (episode == null || episode.getId() == null) {
+            return;
+        }
+        Transaction tx = session.beginTransaction();
+        session.delete(episode);
+        session.flush();
+        session.clear();
+        tx.commit();
     }
 }

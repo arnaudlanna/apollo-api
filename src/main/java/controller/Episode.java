@@ -49,11 +49,13 @@ public class Episode {
             try {
                 repository.Episode.delete(Integer.parseInt(req.params(":id")));
             } catch (Exception ex) {
+                System.out.println(ex);
                 return new BaseResponse(false, null);
             }
             return new BaseResponse(true, null);
         }, gson::toJson);
 
+        options("/episodes/:id", ((request, response) -> response));
 
     }
 }
