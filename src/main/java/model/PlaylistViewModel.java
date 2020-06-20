@@ -1,8 +1,5 @@
 package model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class PlaylistViewModel {
     private int id;
     private String name;

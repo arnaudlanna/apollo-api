@@ -7,7 +7,7 @@ import model.PlaylistViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static controller.Utils.getUser;
+import static utils.HTTPUtils.getUser;
 import static spark.Spark.*;
 
 public class History {

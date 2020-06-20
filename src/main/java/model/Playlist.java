@@ -39,7 +39,7 @@ public class Playlist {
         this.image = input.getImage();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 

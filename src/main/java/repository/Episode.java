@@ -22,7 +22,7 @@ public class Episode {
         Root<model.Episode> rootEntry = cq.from(model.Episode.class);
         CriteriaQuery<model.Episode> all = cq.select(rootEntry);
 
-        TypedQuery<model.Episode> allQuery = session.createQuery(all).setMaxResults(5);
+        TypedQuery<model.Episode> allQuery = session.createQuery(all).setMaxResults(6);
         return allQuery.getResultList();
     }
 

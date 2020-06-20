@@ -2,10 +2,9 @@ package controller;
 
 import com.google.gson.Gson;
 import model.BaseResponse;
-import model.PlaylistViewModel;
 import model.UserViewModel;
 
-import static controller.Utils.getUser;
+import static utils.HTTPUtils.getUser;
 import static spark.Spark.post;
 
 public class User {

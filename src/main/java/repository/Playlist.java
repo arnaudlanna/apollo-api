@@ -1,7 +1,7 @@
 package repository;
 
-import model.PlaylistViewModel;
-import model.PodcastViewModel;
+import javassist.NotFoundException;
+import model.*;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import utils.Hibernate;
@@ -14,6 +14,7 @@ import java.util.List;
 
 public class Playlist {
     private static Exception UserNotFoundException;
+    private static javassist.NotFoundException NotFoundException;
 
     public static List<model.Playlist> list(){
         Session session = Hibernate.getSessionFactory().openSession();
@@ -92,5 +93,53 @@ public class Playlist {
         session.clear();
         tx.commit();
         session.close();
+    }
+
+    public static model.PlaylistItem create(PlaylistItemViewModel input) throws Exception {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        Transaction tx = session.beginTransaction();
+        model.PlaylistItem playlistItem = new model.PlaylistItem();
+        model.Episode episode = Episode.byId(input.getEpisodeID());
+        model.Playlist playlist = Playlist.byId(input.getPlaylistID());
+        if (playlist == null || playlist.getId() == null || episode == null || episode.getId() == null) {
+            throw NotFoundException;
+        }
+        playlistItem.setPlaylist(playlist);
+        playlistItem.setEpisode(episode);
+        session.saveOrUpdate(playlistItem);
+        session.persist(playlistItem);
+        tx.commit();
+        session.close();
+
+        return playlistItem;
+    }
+
+    public static void delete(PlaylistItemViewModel input) throws Exception {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        Transaction tx = session.beginTransaction();
+        model.Episode episode = Episode.byId(input.getEpisodeID());
+        model.Playlist playlist = Playlist.byId(input.getPlaylistID());
+        if (playlist == null || playlist.getId() == null || episode == null || episode.getId() == null) {
+            throw NotFoundException;
+        }
+        String hql = "delete from PlaylistItem where episode = :episode and playlist = :playlist";
+        session.createQuery(hql).setParameter("playlist", playlist).setParameter("episode", episode).executeUpdate();
+        tx.commit();
+        session.close();
+    }
+
+    public static List<model.PlaylistItem> getItems (Integer playlistID) throws Exception {
+        Session session = Hibernate.getSessionFactory().openSession();
+        CriteriaBuilder cb = session.getCriteriaBuilder();
+        CriteriaQuery<model.PlaylistItem> cq = cb.createQuery(model.PlaylistItem.class);
+        Root<model.PlaylistItem> pod = cq.from(model.PlaylistItem.class);
+        CriteriaQuery<model.PlaylistItem> like = cq.select(pod);
+
+        TypedQuery<model.PlaylistItem> likeResult = session.createQuery(like.where(cb.equal(pod.<Integer>get("playlist"), playlistID)));
+        List<model.PlaylistItem> result = likeResult.getResultList();
+        session.close();
+        return result;
     }
 }
