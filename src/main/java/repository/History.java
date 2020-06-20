@@ -1,7 +1,7 @@
 package repository;
 
+import javassist.NotFoundException;
 import model.HistoryViewModel;
-import model.PlaylistViewModel;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import utils.Hibernate;
@@ -13,7 +13,8 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 public class History {
-    private static Exception UserNotFoundException;
+
+    private static NotFoundException NotFoundException;
 
     public static List<model.History> list(){
         Session session = Hibernate.getSessionFactory().openSession();
@@ -64,19 +65,24 @@ public class History {
         return result;
     }
 
-    public static model.History create(HistoryViewModel HistoryInput) throws Exception {
+    public static model.History createOrUpdate(HistoryViewModel HistoryInput) throws Exception {
         Session session = Hibernate.getSessionFactory().openSession();
 
+        Transaction tx = session.beginTransaction();
         model.History history = new model.History();
         model.User user = User.byId(HistoryInput.getUser_id());
         model.Episode episode = Episode.byId(HistoryInput.getEpisode_id());
-        if (user.getId() == null || episode.getId() == null) {
-            throw UserNotFoundException;
+        if (user == null || user.getId() == null || episode == null || episode.getId() == null) {
+            throw NotFoundException;
         }
         history.setUser(user);
         history.setEpisode(episode);
+        history.setProgress(HistoryInput.getProgress());
+        String hql = "delete from History where user = :user and episode = :episode";
+        session.createQuery(hql).setParameter("user", user).setParameter("episode", episode).executeUpdate();
         session.saveOrUpdate(history);
         session.persist(history);
+        tx.commit();    
         session.close();
 
         return history;

@@ -57,6 +57,7 @@ public class Podcast {
         }, gson::toJson);
 
         options("/podcasts/:id", ((request, response) -> response));
+        options("/podcasts", ((request, response) -> response));
 
     }
 }

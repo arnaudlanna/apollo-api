@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static spark.Spark.get;
+import static spark.Spark.options;
 
 public class Search {
 
@@ -45,6 +46,8 @@ public class Search {
             }
             return new BaseResponse(true, new SearchResponse(episodes, podcasts, playlists));
         }, gson::toJson);
+
+        options("/search", ((request, response) -> response));
 
     }
 }

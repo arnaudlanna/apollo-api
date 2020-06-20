@@ -62,6 +62,7 @@ public class Playlist {
         }, gson::toJson);
 
         options("/playlist/:id", ((request, response) -> response));
+        options("/playlist", ((request, response) -> response));
 
     }
 }
