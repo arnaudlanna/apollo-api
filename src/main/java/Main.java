@@ -16,5 +16,6 @@ public class Main {
         Playlist.routes();
         Search.routes();
         User.routes();
+        History.routes();
     }
 }

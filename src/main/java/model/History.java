@@ -26,17 +26,16 @@ public class History {
     @ManyToOne(optional = false)
     private Episode episode;
 
-    @ManyToOne(optional = false)
-    private int Progress;
+    private Integer progress;
 
     public History() {
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -46,5 +45,13 @@ public class History {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
     }
 }
