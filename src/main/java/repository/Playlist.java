@@ -24,7 +24,9 @@ public class Playlist {
         CriteriaQuery<model.Playlist> all = cq.select(rootEntry);
 
         TypedQuery<model.Playlist> allQuery = session.createQuery(all).setMaxResults(5);
-        return allQuery.getResultList();
+        List<model.Playlist> result = allQuery.getResultList();
+        session.close();
+        return result;
     }
 
     public static List<model.Playlist> find(String q){
@@ -36,7 +38,9 @@ public class Playlist {
         CriteriaQuery<model.Playlist> like = cq.select(pod);
 
         TypedQuery<model.Playlist> likeResult = session.createQuery(like.where(cb.like(pod.<String>get("name"), "%" + q + "%"))).setMaxResults(5);
-        return likeResult.getResultList();
+        List<model.Playlist> result = likeResult.getResultList();
+        session.close();
+        return result;
     }
 
     public static List<model.Playlist> byUserId(Integer id){
@@ -48,25 +52,30 @@ public class Playlist {
         CriteriaQuery<model.Playlist> like = cq.select(pod);
 
         TypedQuery<model.Playlist> likeResult = session.createQuery(like.where(cb.equal(pod.<Integer>get("user"), id))).setMaxResults(5);
-        return likeResult.getResultList();
+        List<model.Playlist> result = likeResult.getResultList();
+        session.close();
+        return result;
     }
-// parei aqui
+
     public static model.Playlist byId(Integer id){
         Session session = Hibernate.getSessionFactory().openSession();
-        return session.get(model.Playlist.class, id);
+        model.Playlist result = session.get(model.Playlist.class, id);
+        session.close();
+        return result;
     }
 
     public static model.Playlist create(PlaylistViewModel playlistInput) throws Exception {
         Session session = Hibernate.getSessionFactory().openSession();
 
-        model.Playlist playlist = new model.Playlist();
-        playlist.setName(playlistInput.getName());
+        model.Playlist playlist = new model.Playlist(playlistInput);
         model.User user = User.byId(playlistInput.getUser_id());
         if (user.getId() == null) {
             throw UserNotFoundException;
         }
         playlist.setUser(user);
         session.saveOrUpdate(playlist);
+        session.persist(playlist);
+        session.close();
 
         return playlist;
     }
@@ -82,5 +91,6 @@ public class Playlist {
         session.flush();
         session.clear();
         tx.commit();
+        session.close();
     }
 }

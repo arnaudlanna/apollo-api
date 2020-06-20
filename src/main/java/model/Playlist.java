@@ -1,20 +1,43 @@
 package model;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "History")
+@Table(name = "Playlist")
 
 public class Playlist {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(unique = true, nullable = false)
     private int id;
+
+    @Column(unique = false, length = 1024)
     private String name;
+
+    @Column(unique = false, length = 1024)
     private String description;
+
+    @Column(unique = false, length = 1024)
     private String image;
+
+    @Column(unique = false)
     private Integer followers;
+
+    @Column(unique = false)
     private Boolean privates;
+
+    @ManyToOne(optional = false)
     private User user;
+
+    public Playlist() {
+    }
+
+    public Playlist(PlaylistViewModel input) {
+        this.name = input.getName();
+        this.description = input.getDescription();
+        this.image = input.getImage();
+    }
 
     public int getId() {
         return id;
@@ -70,5 +93,4 @@ public class Playlist {
     public void setUser(User user) {
         this.user = user;
     }
-
 }

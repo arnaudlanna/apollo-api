@@ -2,6 +2,10 @@ package model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,10 +39,12 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    public User(String email, String name, String password) {
+    public User(String email, String name, String password) throws NoSuchAlgorithmException {
         this.email = email;
         this.name = name;
-        this.password = password;
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        byte[] hashedPassword = md.digest(this.password.getBytes(StandardCharsets.UTF_8));
+        this.password = new String(hashedPassword);
     }
 
     public Integer getId() {
