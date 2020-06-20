@@ -1,8 +1,9 @@
 package controller;
 import com.google.gson.Gson;
+import javassist.NotFoundException;
 import model.BaseResponse;
+import model.EpisodeViewModel;
 import model.HistoryViewModel;
-import model.PlaylistViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,17 +18,10 @@ public class History {
         get("/history", (req, res) -> {
             List<HistoryViewModel> result = new ArrayList<>();
             try {
-                List<model.History> history = new ArrayList<>();
-                if(req.queryParams("id") != null) {
-                    history.add(repository.History.byId(Integer.parseInt(req.queryParams("id"))));
-                } else if(req.queryParams("user_id") != null) {
-                    history = repository.History.byUserId(Integer.parseInt(req.queryParams("user_id")));
-                } else if(req.queryParams("episode_id") != null) {
-                    history = repository.History.byEpisodeId(Integer.parseInt(req.queryParams("episode_id")));
-            } else {
-                    history = repository.History.list();
+                List<model.History> historyresult = repository.History.byUserId(getUser(req));
+                for (model.History history : historyresult) {
+                    result.add(new HistoryViewModel(history));
                 }
-
             } catch (Exception ex) {
                 System.out.println(ex);
                 return new BaseResponse(false, null);
@@ -40,11 +34,31 @@ public class History {
             try {
                 HistoryViewModel history = gson.fromJson(req.body(), HistoryViewModel.class);
                 history.setUser_id(getUser(req));
-                createdHistory = repository.History.create(history);
+                createdHistory = repository.History.createOrUpdate(history);
+            } catch (NotFoundException ex) {
+                res.status(404);
+                return new BaseResponse(false, "Episódio ou usuário não encontrados.");
             } catch (Exception ex) {
                 return new BaseResponse(false, null);
             }
             return new BaseResponse(true, new HistoryViewModel(createdHistory));
         }, gson::toJson);
+
+        put("/history", (req, res) -> {
+            model.History createdHistory;
+            try {
+                HistoryViewModel history = gson.fromJson(req.body(), HistoryViewModel.class);
+                history.setUser_id(getUser(req));
+                createdHistory = repository.History.createOrUpdate(history);
+            } catch (NotFoundException ex) {
+                res.status(404);
+                return new BaseResponse(false, "Episódio ou usuário não encontrados.");
+            } catch (Exception ex) {
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, new HistoryViewModel(createdHistory));
+        }, gson::toJson);
+
+        options("/history", ((request, response) -> response));
     }
 }

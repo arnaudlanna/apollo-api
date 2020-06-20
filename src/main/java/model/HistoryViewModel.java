@@ -23,16 +23,26 @@ public class HistoryViewModel {
         return episode_id;
     }
 
+    public Integer getProgress() {
+        return progress;
+    }
+
+    public void setProgress(Integer progress) {
+        this.progress = progress;
+    }
+
     public void setEpisode_id(Integer episode_id) {
         this.episode_id = episode_id;
     }
 
     private Integer user_id;
     private Integer episode_id;
+    private Integer progress;
 
     public HistoryViewModel(History history) {
         this.id = history.getId();
         this.user_id = history.getUser().getId();
         this.episode_id = history.getEpisode().getId();
+        this.progress = history.getProgress();
     }
 }

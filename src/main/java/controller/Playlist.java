@@ -108,6 +108,7 @@ public class Playlist {
         options("/playlist", ((request, response) -> response));
         options("/playlist/add", ((request, response) -> response));
         options("/playlist/delete", ((request, response) -> response));
+        options("/playlist", ((request, response) -> response));
 
     }
 }

@@ -5,6 +5,7 @@ import model.BaseResponse;
 import model.UserViewModel;
 
 import static utils.HTTPUtils.getUser;
+import static spark.Spark.options;
 import static spark.Spark.post;
 
 public class User {
@@ -47,5 +48,9 @@ public class User {
             }
             return new BaseResponse(true, new UserViewModel(updatedUser));
         }, gson::toJson);
+
+        options("/login", ((request, response) -> response));
+        options("/signup", ((request, response) -> response));
+        options("/update", ((request, response) -> response));
     }
 }

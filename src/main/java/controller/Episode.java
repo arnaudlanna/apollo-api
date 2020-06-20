@@ -56,6 +56,7 @@ public class Episode {
         }, gson::toJson);
 
         options("/episodes/:id", ((request, response) -> response));
+        options("/episodes", ((request, response) -> response));
 
     }
 }
