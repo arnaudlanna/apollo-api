@@ -15,4 +15,5 @@ dependencies {
     compile "org.hibernate:hibernate-core:5.4.15.Final"
     compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.6'
     implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.auth0:java-jwt:3.10.3'
 }
