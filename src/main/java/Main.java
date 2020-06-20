@@ -1,7 +1,4 @@
-import controller.Episode;
-import controller.Playlist;
-import controller.Podcast;
-import controller.User;
+import controller.*;
 import spark.Filter;
 import utils.Hibernate;
 
@@ -17,6 +14,7 @@ public class Main {
         Podcast.routes();
         Episode.routes();
         Playlist.routes();
+        Search.routes();
         User.routes();
     }
 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +44,13 @@ public class User implements Serializable {
         MessageDigest md = MessageDigest.getInstance("SHA-512");
         byte[] hashedPassword = md.digest(this.password.getBytes(StandardCharsets.UTF_8));
         this.password = new String(hashedPassword);
+    }
+
+    public void updateUser(User user) {
+        this.setName(user.getName());
+        this.setPassword(user.getPassword());
+        this.setEmail(user.getEmail());
+        this.setProfilePicture(user.getProfilePicture());
     }
 
     public Integer getId() {

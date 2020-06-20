@@ -2,7 +2,10 @@ package controller;
 
 import com.google.gson.Gson;
 import model.BaseResponse;
+import model.PlaylistViewModel;
+import model.UserViewModel;
 
+import static controller.Utils.getUser;
 import static spark.Spark.post;
 
 public class User {
@@ -20,6 +23,30 @@ public class User {
                 return new BaseResponse(false, null);
             }
             return new BaseResponse(true, token);
+        }, gson::toJson);
+
+        post("/signup", (req, res) -> {
+            model.User user = gson.fromJson(req.body(), model.User.class);
+            String token;
+            try {
+                token = repository.User.signup(user);
+            } catch (Exception ex) {
+                res.status(400);
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, token);
+        }, gson::toJson);
+
+        post("/update", (req, res) -> {
+            model.User updatedUser;
+            try {
+                model.User user = gson.fromJson(req.body(), model.User.class);
+                user.setId(getUser(req));
+                updatedUser = repository.User.update(user);
+            } catch (Exception ex) {
+                return new BaseResponse(false, null);
+            }
+            return new BaseResponse(true, new UserViewModel(updatedUser));
         }, gson::toJson);
     }
 }

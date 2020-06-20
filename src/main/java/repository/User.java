@@ -2,7 +2,9 @@ package repository;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import model.UserViewModel;
 import org.hibernate.Session;
+import org.hibernate.Transaction;
 import utils.Hibernate;
 
 import javax.persistence.TypedQuery;
@@ -49,6 +51,49 @@ public class User {
                 .withIssuer("Apollo")
                 .withIssuedAt(new Date())
                 .sign(algorithm);
+    }
+
+    public static String signup(model.User user) throws NoSuchAlgorithmException {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        byte[] hashedPassword = md.digest(user.getPassword().getBytes(StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashedPassword) {
+            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+        }
+        user.setPassword(sb.toString());
+        session.save(user);
+        session.persist(user);
+        session.close();
+
+        Algorithm algorithm = Algorithm.HMAC256("ap0ll0s3cret");
+        return JWT.create()
+                .withSubject(user.getId().toString())
+                .withIssuer("Apollo")
+                .withIssuedAt(new Date())
+                .sign(algorithm);
+    }
+
+    public static model.User update(model.User user) throws NoSuchAlgorithmException {
+        Session session = Hibernate.getSessionFactory().openSession();
+
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+        byte[] hashedPassword = md.digest(user.getPassword().getBytes(StandardCharsets.UTF_8));
+        StringBuilder sb = new StringBuilder();
+        for (byte b : hashedPassword) {
+            sb.append(Integer.toString((b & 0xff) + 0x100, 16).substring(1));
+        }
+        user.setPassword(sb.toString());
+
+        model.User userInDB = session.get(model.User.class, user.getId());
+        userInDB.updateUser(user);
+
+        Transaction tx = session.beginTransaction();
+        session.saveOrUpdate(userInDB);
+        tx.commit();
+        session.close();
+        return user;
     }
 
     public static model.User byId(Integer id){
